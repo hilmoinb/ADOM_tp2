@@ -97,14 +97,11 @@ public class Matrice {
 		return res;
 	}
 
-	public int calculMatrice(double[][] matrice, int v1, int v2) {
-		int res = 0;
+	public double distance(int v1, int v2) {
 		if (v1 > v2)
-			res += matrice[v2][v1];
+			return matrice[v2][v1];
 		else
-			res += matrice[v1][v2];
-		return res;
-
+			return matrice[v1][v2];
 	}
 
 	public int findMin(double[][] matrice, int ville, List<Integer> util) {
