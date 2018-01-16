@@ -4,59 +4,27 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TspReader {
+public class Matrice {
 
-	private File file;
+	private double[][] matrice;
+	private final int NBVILLES;
 
-	public TspReader(File f) {
-		this.file = f;
-	}
-
-	public Ville[] read() {
-		BufferedReader br = null;
-		FileReader fr = null;
-		Ville[] tab = new Ville[101];
-		try {
-			fr = new FileReader(this.file);
-			br = new BufferedReader(fr);
-			String line = br.readLine();
-			int cpt = 1;
-			while (line != null) {
-				if (!line.equals("EOF")) {
-					String tmp[] = line.split(" ");
-					tab[cpt++] = new Ville(Integer.parseInt(tmp[0]), Integer.parseInt(tmp[1]),
-							Integer.parseInt(tmp[2]));
-				}
-				line = br.readLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-				fr.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
+	public Matrice(Ville[] villes) {
+		this.NBVILLES = villes.length;
+		this.matrice = new double[NBVILLES + 1][NBVILLES + 1];
+		for (int i = 1; i < NBVILLES; i++) {
+			for (int j = i; j < NBVILLES; j++) {
+				this.matrice[i][j] = villes[i].distance(villes[j]);
 			}
 		}
-		return tab;
 	}
 
-	public double[][] matrice(Ville[] list) {
-		double[][] res = new double[101][101];
-		for (int i = 1; i < list.length; i++) {
-			for (int j = i; j < list.length; j++) {
-				res[i][j] = list[i].distance(list[j]);
-			}
-		}
-		return res;
-	}
-
-	public void afficherMatrice(double[][] matrice) {
+	public void afficherMatrice() {
 		for (int i = 1; i < matrice.length; i++) {
 			for (int j = 1; j < matrice.length; j++) {
 				System.out.print(matrice[i][j] + " ,");
@@ -65,17 +33,17 @@ public class TspReader {
 		}
 	}
 
-	public int fonctionEvaluation(int[][] matrice, int[] solutionpermutation) {
+	public int calculerCout(int[] chemin) {
 		int res = 0;
 		int current = 0;
 		int next = 0;
-		for (int i = 0; i < solutionpermutation.length; i++) {
-			if (i + 1 > solutionpermutation.length - 1) {
-				next = solutionpermutation[0];
-				current = solutionpermutation[i];
+		for (int i = 0; i < chemin.length; i++) {
+			if (i + 1 > chemin.length - 1) {
+				next = chemin[0];
+				current = chemin[i];
 			} else {
-				next = solutionpermutation[i + 1];
-				current = solutionpermutation[i];
+				next = chemin[i + 1];
+				current = chemin[i];
 			}
 			if (next <= current) {
 				res += matrice[next][current];
@@ -86,7 +54,7 @@ public class TspReader {
 		return res;
 	}
 
-	public int[] solutionpermutationaleatoire() {
+	public int[] creerCheminAleatoire() {
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 1; i <= 100; i++) {
 			list.add(i);
@@ -136,6 +104,7 @@ public class TspReader {
 		else
 			res += matrice[v1][v2];
 		return res;
+
 	}
 
 	public int findMin(double[][] matrice, int ville, List<Integer> util) {
