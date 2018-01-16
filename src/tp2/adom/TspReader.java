@@ -1,4 +1,5 @@
 package tp2.adom;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -103,15 +104,15 @@ public class TspReader {
 	}
 
 	public int fonctionheuristique(double[][] matrice, int debut) {
-		String chemin = debut +"";
+		String chemin = debut + "";
 		List<Integer> utilise = new ArrayList<Integer>();
 		int res = 0;
 		int current = debut;
 		utilise.add(debut);
 		int cpt = 0;
-		while (cpt < matrice.length -2) {
+		while (cpt < matrice.length - 2) {
 			int tmp = findMin(matrice, current, utilise);
-			chemin +=" - " +tmp ;
+			chemin += " - " + tmp;
 			if (tmp > current)
 				res += matrice[current][tmp];
 			else
@@ -127,9 +128,14 @@ public class TspReader {
 			res += matrice[debut][current];
 		return res;
 	}
-	
-	public int calculMatrice(int v1, int v2) {
-		return 0;
+
+	public int calculMatrice(double[][] matrice, int v1, int v2) {
+		int res = 0;
+		if (v1 > v2)
+			res += matrice[v2][v1];
+		else
+			res += matrice[v1][v2];
+		return res;
 	}
 
 	public int findMin(double[][] matrice, int ville, List<Integer> util) {
@@ -142,7 +148,7 @@ public class TspReader {
 					tmp = matrice[ville][i];
 				else
 					tmp = matrice[i][ville];
-				if (tmp < min && tmp != 0 ) {
+				if (tmp < min && tmp != 0) {
 					min = tmp;
 					sommetpetit = i;
 				}
