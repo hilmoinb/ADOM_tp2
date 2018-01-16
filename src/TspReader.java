@@ -128,7 +128,7 @@ public class TspReader {
 	}
 
 	public int findMin(double[][] matrice, int ville, List<Integer> util) {
-		double min = 99999999999.0;
+		double min = 999999990;
 		int sommetpetit = 0;
 		for (int i = 1; i < matrice.length; i++) {
 			if (i != ville && !util.contains(i)) {
@@ -156,6 +156,6 @@ public class TspReader {
 		// for (int i = 0; i < tab.length; i++) {
 		// tab[i] = i + 1;
 		// }
-		System.out.println(tsp.fonctionheuristique(d, 1));
+		System.out.println(tsp.fonctionheuristique(d, 85));
 	}
 }
