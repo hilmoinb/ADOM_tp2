@@ -4,14 +4,20 @@ import java.io.File;
 public class Main {
 
 	public static void main(String[] args) {
-		TspReader tsp = new TspReader(new File("kroA100.tsp"));
-		Ville[] tmp = tsp.read();
-		double[][] d = tsp.matrice(tmp);
-		tsp.afficherMatrice(d);
+		TspParser parser = new TspParser(new File("kroA100.tsp"));
+		Ville[] villes = parser.read();
+		Matrice matrice = new Matrice(villes);
+		
+		
+		matrice.afficherMatrice();
+		
+		
+		
+		
 		// int[] tab = /* tsp.solutionpermutationaleatoire(); */new int[3];
 		// for (int i = 0; i < tab.length; i++) {
 		// tab[i] = i + 1;
 		// }
-		System.out.println(tsp.fonctionheuristique(d, 1));
+//		System.out.println(tsp.fonctionheuristique(d, 1));
 	}
 }
