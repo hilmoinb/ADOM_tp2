@@ -127,6 +127,10 @@ public class TspReader {
 			res += matrice[debut][current];
 		return res;
 	}
+	
+	public int calculMatrice(int v1, int v2) {
+		return 0;
+	}
 
 	public int findMin(double[][] matrice, int ville, List<Integer> util) {
 		double min = 999999990;
