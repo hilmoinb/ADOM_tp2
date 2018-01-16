@@ -66,7 +66,7 @@ public class Matrice {
 		return res;
 	}
 
-	public int fonctionheuristique(double[][] matrice, int debut) {
+	public int fonctionheuristique(int debut) {
 		String chemin = debut + "";
 		List<Integer> utilise = new ArrayList<Integer>();
 		int res = 0;
@@ -74,7 +74,7 @@ public class Matrice {
 		utilise.add(debut);
 		int cpt = 0;
 		while (cpt < matrice.length - 2) {
-			int tmp = findMin(matrice, current, utilise);
+			int tmp = findMin(current, utilise);
 			chemin += " - " + tmp;
 			if (tmp > current)
 				res += matrice[current][tmp];
@@ -99,7 +99,7 @@ public class Matrice {
 			return matrice[v1][v2];
 	}
 
-	public int findMin(double[][] matrice, int ville, List<Integer> util) {
+	public int findMin(int ville, List<Integer> util) {
 		double min = 999999990;
 		int sommetpetit = 0;
 		for (int i = 1; i < matrice.length; i++) {
@@ -116,7 +116,26 @@ public class Matrice {
 			}
 		}
 		return sommetpetit;
-
+	}
+	
+	public Ville[] fonction_twoopt(Ville[] villes) {
+		boolean modifie = true;
+		while(modifie) {
+			modifie = false;
+			for(int i=1; i<matrice.length-1; i++) { //bonne méthode de mettre des -1 ?
+				for(int j=1; j<matrice.length-1; j++) {
+					if( j==i || j==i-1 || j==i+1)
+						continue;
+					if( distance(i,i+1) + distance(j,j+1)  >  distance(i,j) + distance(i+1,j+1) ) {
+						Ville tmp = villes[i+1];
+						villes[i+1] = villes[j];
+						villes[j] = tmp;
+						modifie = true;
+					}
+				}
+			}
+		}
+		return villes; //peut être faire une cope du chemin en début de fonction, au cas où ça modifie son chemin d'entrée et que ça lui plaise pas
 	}
 
 }
