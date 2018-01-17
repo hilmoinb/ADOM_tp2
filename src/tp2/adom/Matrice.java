@@ -40,11 +40,7 @@ public class Matrice {
 				next = chemin[i + 1];
 				current = chemin[i];
 			}
-			if (next <= current) {
-				res += matrice[next][current];
-			} else {
-				res += matrice[current][next];
-			}
+			res += distance(next, current);
 		}
 		return res;
 	}
@@ -76,19 +72,13 @@ public class Matrice {
 		while (cpt < matrice.length - 2) {
 			int tmp = findMin(current, utilise);
 			chemin += " - " + tmp;
-			if (tmp > current)
-				res += matrice[current][tmp];
-			else
-				res += matrice[tmp][current];
+			res += distance(tmp, current);
 			cpt++;
 			current = tmp;
 			utilise.add(tmp);
 		}
 		System.out.println(chemin);
-		if (debut > current)
-			res += matrice[current][debut];
-		else
-			res += matrice[debut][current];
+		res += distance(debut, current);
 		return res;
 	}
 
@@ -105,10 +95,7 @@ public class Matrice {
 		for (int i = 1; i < matrice.length; i++) {
 			if (i != ville && !util.contains(i)) {
 				double tmp = 0.0;
-				if (i > ville)
-					tmp = matrice[ville][i];
-				else
-					tmp = matrice[i][ville];
+				tmp = distance(ville, i);
 				if (tmp < min && tmp != 0) {
 					min = tmp;
 					sommetpetit = i;
@@ -117,30 +104,31 @@ public class Matrice {
 		}
 		return sommetpetit;
 	}
-	
+
 	public Ville[] fonction_twoopt(Ville[] villes) {
 		boolean modifie = true;
-		while(modifie) {
+		while (modifie) {
 			modifie = false;
-			for(int i=1; i<matrice.length-1; i++) { //bonne méthode de mettre des -1 ?
-				for(int j=1; j<matrice.length-1; j++) {
-					if( j==i || j==i-1 || j==i+1)
+			for (int i = 1; i < matrice.length - 1; i++) { // bonne méthode de mettre des -1 ?
+				for (int j = 1; j < matrice.length - 1; j++) {
+					if (j == i || j == i - 1 || j == i + 1)
 						continue;
-					if( distance(i,i+1) + distance(j,j+1)  >  distance(i,j) + distance(i+1,j+1) ) {
-						Ville tmp = villes[i+1];
-						villes[i+1] = villes[j];
+					if (distance(i, i + 1) + distance(j, j + 1) > distance(i, j) + distance(i + 1, j + 1)) {
+						Ville tmp = villes[i + 1];
+						villes[i + 1] = villes[j];
 						villes[j] = tmp;
 						modifie = true;
 					}
 				}
 			}
 		}
-		return villes; //peut être faire une cope du chemin en début de fonction, au cas où ça modifie son chemin d'entrée et que ça lui plaise pas
+		return villes; // peut être faire une cope du chemin en début de fonction, au cas où ça modifie
+						// son chemin d'entrée et que ça lui plaise pas
 	}
 
 	public Ville[] fonction_swap(Ville[] chemin) {
 		Ville[] min = chemin;
-		
+
 		return null;
 	}
 
