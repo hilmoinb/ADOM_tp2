@@ -18,6 +18,6 @@ public class Main {
 		// for (int i = 0; i < tab.length; i++) {
 		// tab[i] = i + 1;
 		// }
-//		System.out.println(tsp.fonctionheuristique(d, 1));
+		System.out.println(matrice.fonctionheuristique(20));
 	}
 }

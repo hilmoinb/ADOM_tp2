@@ -66,7 +66,7 @@ public class Matrice {
 		return res;
 	}
 
-	public int fonctionheuristique(double[][] matrice, int debut) {
+	public int fonctionheuristique(int debut) {
 		String chemin = debut + "";
 		List<Integer> utilise = new ArrayList<Integer>();
 		int res = 0;
@@ -117,6 +117,12 @@ public class Matrice {
 		}
 		return sommetpetit;
 
+	}
+
+	public Ville[] fonction_swap(Ville[] chemin) {
+		Ville[] min = chemin;
+		
+		return null;
 	}
 
 }
