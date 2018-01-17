@@ -105,7 +105,28 @@ public class Matrice {
 		return sommetpetit;
 	}
 
-	public Ville[] fonction_twoopt(Ville[] villes) {
+	
+	/**
+	 * Génère la liste des voisinages possibles, ne fait rien de plus
+	 * @param villes Chemin des villes à parcourir dans l'ordre
+	 * @return
+	 */
+	public Ville[][] fonction_twoopt(Ville[] villes) {
+		Ville[][] voisinages = new Ville[NBVILLES][NBVILLES];
+		for (int i = 0; i < NBVILLES -1; i++) { // bonne méthode de mettre des -1 ?
+			for (int j = i; j < NBVILLES -1; j++) {
+				if (j == i || j == i - 1 || j == i + 1)
+					continue;
+				voisinages[i][i + 1] = villes[j];
+				voisinages[i][j] = villes[i + 1];
+			}
+		}
+		return voisinages; // peut être faire une cope du chemin en début de fonction, au cas où ça modifie
+						// son chemin d'entrée et que ça lui plaise pas
+	}
+
+	
+	/*public Ville[] fonction_twoopt(Ville[] villes) {
 		boolean modifie = true;
 		while (modifie) {
 			modifie = false;
@@ -124,8 +145,8 @@ public class Matrice {
 		}
 		return villes; // peut être faire une cope du chemin en début de fonction, au cas où ça modifie
 						// son chemin d'entrée et que ça lui plaise pas
-	}
-
+	}*/
+	
 	public Ville[] fonction_swap(Ville[] chemin) {
 		Ville[] min = chemin;
 
