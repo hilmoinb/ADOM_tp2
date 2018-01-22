@@ -5,21 +5,25 @@ public class Main {
 
 	public static void main(String[] args) {
 		TspParser parser = new TspParser(new File("kroA100.tsp"));
-		Ville[] villes = parser.read();
+		Ville[] villes = parser.genererVilles();
 		Matrice matrice = new Matrice(villes);
 		
+		//System.out.println(matrice);
 		
-		matrice.afficherMatrice();
+		Ville[] cheminAleatoire = matrice.creerCheminAleatoire();
+		for (int i=0; i<cheminAleatoire.length; i++)
+			System.out.println("i=" + i +" : " +cheminAleatoire[i]);
+		//System.out.println(matrice.calculerCout(cheminAleatoire));
 		
-		
-		
+		Ville[][] voisinages = matrice.fonction_twoopt(cheminAleatoire);
+		printVoisinages(voisinages);
 		
 		// int[] tab = /* tsp.solutionpermutationaleatoire(); */new int[3];
 		// for (int i = 0; i < tab.length; i++) {
 		// tab[i] = i + 1;
 		// }
 		
-		System.out.println(matrice.fonctionheuristique(villes[19])); //et du coup la ville "20" ?
+		//System.out.println(matrice.fonctionheuristique(villes[19])); //et du coup la ville "20" ?
 	}
 	
 	

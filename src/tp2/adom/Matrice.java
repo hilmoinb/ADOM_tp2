@@ -1,6 +1,8 @@
 package tp2.adom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -21,44 +23,39 @@ public class Matrice {
 		}
 	}
 
-	public void afficherMatrice() {
+	@Override
+	public String toString() {
+		String toReturn = "";
 		for (int i = 1; i < matrice.length; i++) {
-			for (int j = 1; j < matrice.length; j++) {
-				System.out.print(matrice[i][j] + " ,");
-			}
-			System.out.println();
+			for (int j = 1; j < matrice.length; j++)
+				toReturn += matrice[i][j] + " ,";
+			toReturn += "\n";
 		}
+		return toReturn;
 	}
 
 	public int calculerCout(Ville[] chemin) {
 		int res = 0;
-		Ville current;
-		Ville next;
-		for (int i = 0; i < chemin.length; i++) {
-			if (i + 1 > chemin.length - 1) {
-				next = chemin[0];
-				current = chemin[i];
-			} else {
-				next = chemin[i + 1];
-				current = chemin[i];
-			}
-			res += distance(next, current);
-		}
+		Ville current, next;
+		
+		//on pourrait ajouter des if qui check si la taille du chemin est bien = à NBVILLES, si ce sont les bonnes villes etc
+		for(int i=0; i<NBVILLES; i++)
+			res += distance(chemin[i], chemin[(i+1)%NBVILLES]);
+		
 		return res;
 	}
 
 	public Ville[] creerCheminAleatoire() {
-		List<Integer> list = new ArrayList<Integer>();
-		for (int i = 1; i <= NBVILLES; i++)
-			list.add(i);
+		ArrayList<Ville> list = new ArrayList<>();
+		for(Ville v : this.villes)
+			list.add(v);
 
 		Ville res[] = new Ville[NBVILLES];
 		int cpt = 0;
 		while (!list.isEmpty()) {
 			int random = new Random().nextInt(list.size());
-			res[cpt] = this.villes[random];
+			res[cpt++] = list.get(random);
 			list.remove(random);
-			cpt = cpt + 1;
 		}
 		return res;
 	}
@@ -93,14 +90,13 @@ public class Matrice {
 	public Ville findMin(Ville ville, List<Ville> util) {
 		double min = 999999990;
 		Ville sommetpetit = null;
-		for (int i = 1; i < matrice.length; i++) {
-			if (i != ville.pos && !util.contains(i)) {
-				double tmp = 0.0;
-				tmp = distance(ville, villes[i]);
-				if (tmp < min && tmp != 0) {
-					min = tmp;
-					sommetpetit = villes[i]; //pas sûr, surement un décalage avec les index !
-				}
+		
+		double tmp;
+		for (Ville v : util) {
+			tmp = distance(ville, v);
+			if (tmp < min && tmp != 0) {
+				min = tmp;
+				sommetpetit = v;
 			}
 		}
 		return sommetpetit;
@@ -110,16 +106,24 @@ public class Matrice {
 	/**
 	 * Génère la liste des voisinages possibles, ne fait rien de plus
 	 * @param villes Chemin des villes à parcourir dans l'ordre
-	 * @return
+	 * @return liste des voisinages possibles sous firme de tableau de tableaux
 	 */
-	public Ville[][] fonction_twoopt(Ville[] villes) {
-		Ville[][] voisinages = new Ville[NBVILLES][NBVILLES];
-		for (int i = 0; i < NBVILLES -1; i++) { // bonne méthode de mettre des -1 ?
-			for (int j = i; j < NBVILLES -1; j++) {
+	public Ville[][] fonction_twoopt(Ville[] chemin) {
+		int nbSolutions = (NBVILLES * (NBVILLES-3)) / 2 + 1;
+		Ville[][] voisinages = new Ville[nbSolutions][NBVILLES];
+		int z=-1;
+		for (int i = 0; i < NBVILLES; i++) {
+			for(int j=i+2; j<NBVILLES; j++) {
 				if (j == i || j == i - 1 || j == i + 1)
 					continue;
-				voisinages[i][i + 1] = villes[j];
-				voisinages[i][j] = villes[i + 1];
+				voisinages[++z] = chemin.clone();
+				int a=i, b=j;
+				Ville tmp;
+				while(b>a) {
+					tmp = voisinages[z][a];
+					voisinages[z][a++] = voisinages[z][b];
+					voisinages[z][b--] = tmp;
+				}
 			}
 		}
 		return voisinages;
