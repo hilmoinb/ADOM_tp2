@@ -8,8 +8,10 @@ public class Matrice {
 
 	private double[][] matrice;
 	private final int NBVILLES;
+	private Ville[] villes;
 
 	public Matrice(Ville[] villes) {
+		this.villes = villes;
 		this.NBVILLES = villes.length;
 		this.matrice = new double[NBVILLES + 1][NBVILLES + 1];
 		for (int i = 1; i < NBVILLES; i++) {
@@ -28,10 +30,10 @@ public class Matrice {
 		}
 	}
 
-	public int calculerCout(int[] chemin) {
+	public int calculerCout(Ville[] chemin) {
 		int res = 0;
-		int current = 0;
-		int next = 0;
+		Ville current;
+		Ville next;
 		for (int i = 0; i < chemin.length; i++) {
 			if (i + 1 > chemin.length - 1) {
 				next = chemin[0];
@@ -45,32 +47,31 @@ public class Matrice {
 		return res;
 	}
 
-	public int[] creerCheminAleatoire() {
+	public Ville[] creerCheminAleatoire() {
 		List<Integer> list = new ArrayList<Integer>();
-		for (int i = 1; i <= 100; i++) {
+		for (int i = 1; i <= NBVILLES; i++)
 			list.add(i);
-		}
 
-		int res[] = new int[100];
+		Ville res[] = new Ville[NBVILLES];
 		int cpt = 0;
 		while (!list.isEmpty()) {
 			int random = new Random().nextInt(list.size());
-			res[cpt] = list.get(random);
+			res[cpt] = this.villes[random];
 			list.remove(random);
 			cpt = cpt + 1;
 		}
 		return res;
 	}
 
-	public int fonctionheuristique(int debut) {
+	public int fonctionheuristique(Ville debut) {
 		String chemin = debut + "";
-		List<Integer> utilise = new ArrayList<Integer>();
+		List<Ville> utilise = new ArrayList<Ville>();
 		int res = 0;
-		int current = debut;
+		Ville current = debut;
 		utilise.add(debut);
 		int cpt = 0;
 		while (cpt < matrice.length - 2) {
-			int tmp = findMin(current, utilise);
+			Ville tmp = findMin(current, utilise);
 			chemin += " - " + tmp;
 			res += distance(tmp, current);
 			cpt++;
@@ -82,23 +83,23 @@ public class Matrice {
 		return res;
 	}
 
-	public double distance(int v1, int v2) {
-		if (v1 > v2)
-			return matrice[v2][v1];
+	public double distance(Ville v1, Ville v2) {
+		if (v1.pos > v2.pos)
+			return matrice[v2.pos][v1.pos];
 		else
-			return matrice[v1][v2];
+			return matrice[v1.pos][v2.pos];
 	}
 
-	public int findMin(int ville, List<Integer> util) {
+	public Ville findMin(Ville ville, List<Ville> util) {
 		double min = 999999990;
-		int sommetpetit = 0;
+		Ville sommetpetit = null;
 		for (int i = 1; i < matrice.length; i++) {
-			if (i != ville && !util.contains(i)) {
+			if (i != ville.pos && !util.contains(i)) {
 				double tmp = 0.0;
-				tmp = distance(ville, i);
+				tmp = distance(ville, villes[i]);
 				if (tmp < min && tmp != 0) {
 					min = tmp;
-					sommetpetit = i;
+					sommetpetit = villes[i]; //pas sûr, surement un décalage avec les index !
 				}
 			}
 		}
@@ -121,8 +122,7 @@ public class Matrice {
 				voisinages[i][j] = villes[i + 1];
 			}
 		}
-		return voisinages; // peut être faire une cope du chemin en début de fonction, au cas où ça modifie
-						// son chemin d'entrée et que ça lui plaise pas
+		return voisinages;
 	}
 
 	

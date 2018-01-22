@@ -18,6 +18,22 @@ public class Main {
 		// for (int i = 0; i < tab.length; i++) {
 		// tab[i] = i + 1;
 		// }
-		System.out.println(matrice.fonctionheuristique(20));
+		
+		System.out.println(matrice.fonctionheuristique(villes[19])); //et du coup la ville "20" ?
+	}
+	
+	
+	
+	public static void printVoisinages(Ville[][] voisinages) {
+		String str = "|\t";
+
+        for(int i=0;i<voisinages.length;i++){
+            for(int j=0;j<voisinages[i].length;j++){
+                str += voisinages[i][j] + "\t";
+            }
+            System.out.println(str + "|");
+            str = "|\t";
+        }
+
 	}
 }
