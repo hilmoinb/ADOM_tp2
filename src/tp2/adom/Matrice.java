@@ -151,10 +151,18 @@ public class Matrice {
 						// son chemin d'entrée et que ça lui plaise pas
 	}*/
 	
-	public Ville[] fonction_swap(Ville[] chemin) {
-		Ville[] min = chemin;
-
+	public Ville[][] fonction_swap(Ville[] chemin) {
+		Ville[] current = chemin;
+		for (int i = 1; i< chemin.length;i++) {
+			for (int j = i+1; j<chemin.length; j++) {
+				
+			}
+		}
 		return null;
+	}
+	
+	public void swap(Ville[] chemin, int idx,int idx2) {
+		
 	}
 
 }
