@@ -37,17 +37,18 @@ public class Matrice {
 	public int calculerCout(Ville[] chemin) {
 		int res = 0;
 		Ville current, next;
-		
-		//on pourrait ajouter des if qui check si la taille du chemin est bien = à NBVILLES, si ce sont les bonnes villes etc
-		for(int i=0; i<NBVILLES; i++)
-			res += distance(chemin[i], chemin[(i+1)%NBVILLES]);
-		
+
+		// on pourrait ajouter des if qui check si la taille du chemin est bien = à
+		// NBVILLES, si ce sont les bonnes villes etc
+		for (int i = 0; i < NBVILLES; i++)
+			res += distance(chemin[i], chemin[(i + 1) % NBVILLES]);
+
 		return res;
 	}
 
 	public Ville[] creerCheminAleatoire() {
 		ArrayList<Ville> list = new ArrayList<>();
-		for(Ville v : this.villes)
+		for (Ville v : this.villes)
 			list.add(v);
 
 		Ville res[] = new Ville[NBVILLES];
@@ -90,7 +91,7 @@ public class Matrice {
 	public Ville findMin(Ville ville, List<Ville> util) {
 		double min = 999999990;
 		Ville sommetpetit = null;
-		
+
 		double tmp;
 		for (Ville v : util) {
 			tmp = distance(ville, v);
@@ -102,24 +103,25 @@ public class Matrice {
 		return sommetpetit;
 	}
 
-	
 	/**
 	 * Génère la liste des voisinages possibles, ne fait rien de plus
-	 * @param villes Chemin des villes à parcourir dans l'ordre
+	 * 
+	 * @param villes
+	 *            Chemin des villes à parcourir dans l'ordre
 	 * @return liste des voisinages possibles sous firme de tableau de tableaux
 	 */
 	public Ville[][] fonction_twoopt(Ville[] chemin) {
-		int nbSolutions = (NBVILLES * (NBVILLES-3)) / 2 + 1;
+		int nbSolutions = (NBVILLES * (NBVILLES - 3)) / 2 + 1;
 		Ville[][] voisinages = new Ville[nbSolutions][NBVILLES];
-		int z=-1;
+		int z = -1;
 		for (int i = 0; i < NBVILLES; i++) {
-			for(int j=i+2; j<NBVILLES; j++) {
+			for (int j = i + 2; j < NBVILLES; j++) {
 				if (j == i || j == i - 1 || j == i + 1)
 					continue;
 				voisinages[++z] = chemin.clone();
-				int a=i, b=j;
+				int a = i, b = j;
 				Ville tmp;
-				while(b>a) {
+				while (b > a) {
 					tmp = voisinages[z][a];
 					voisinages[z][a++] = voisinages[z][b];
 					voisinages[z][b--] = tmp;
@@ -129,40 +131,41 @@ public class Matrice {
 		return voisinages;
 	}
 
-	
-	/*public Ville[] fonction_twoopt(Ville[] villes) {
-		boolean modifie = true;
-		while (modifie) {
-			modifie = false;
-			for (int i = 1; i < matrice.length - 1; i++) { // bonne méthode de mettre des -1 ?
-				for (int j = 1; j < matrice.length - 1; j++) {
-					if (j == i || j == i - 1 || j == i + 1)
-						continue;
-					if (distance(i, i + 1) + distance(j, j + 1) > distance(i, j) + distance(i + 1, j + 1)) {
-						Ville tmp = villes[i + 1];
-						villes[i + 1] = villes[j];
-						villes[j] = tmp;
-						modifie = true;
-					}
-				}
-			}
-		}
-		return villes; // peut être faire une cope du chemin en début de fonction, au cas où ça modifie
-						// son chemin d'entrée et que ça lui plaise pas
-	}*/
-	
+	/*
+	 * public Ville[] fonction_twoopt(Ville[] villes) { boolean modifie = true;
+	 * while (modifie) { modifie = false; for (int i = 1; i < matrice.length - 1;
+	 * i++) { // bonne méthode de mettre des -1 ? for (int j = 1; j < matrice.length
+	 * - 1; j++) { if (j == i || j == i - 1 || j == i + 1) continue; if (distance(i,
+	 * i + 1) + distance(j, j + 1) > distance(i, j) + distance(i + 1, j + 1)) {
+	 * Ville tmp = villes[i + 1]; villes[i + 1] = villes[j]; villes[j] = tmp;
+	 * modifie = true; } } } } return villes; // peut être faire une cope du chemin
+	 * en début de fonction, au cas où ça modifie // son chemin d'entrée et que ça
+	 * lui plaise pas }
+	 */
+
 	public Ville[][] fonction_swap(Ville[] chemin) {
-		Ville[] current = chemin;
-		for (int i = 1; i< chemin.length;i++) {
-			for (int j = i+1; j<chemin.length; j++) {
-				
+		int nbSolutions = ((NBVILLES -1) * (NBVILLES - 2)) / 2;
+		Ville[][] voisinages = new Ville[nbSolutions][NBVILLES];
+		int z = 0;
+		for (int i = 1; i < chemin.length; i++) {
+			for (int j = i + 1; j < chemin.length; j++) {
+				Ville[] tmp = swap(chemin, i, j);
+				for (int k = 0; k < tmp.length; k++) {
+					voisinages[z][k] = tmp[k];
+				}
+				z++;
 			}
 		}
-		return null;
+		return voisinages;
 	}
-	
-	public void swap(Ville[] chemin, int idx,int idx2) {
-		
+
+	private Ville[] swap(Ville[] chemin, int idx1, int idx2) {
+		Ville v1 = chemin[idx1];
+		Ville v2 = chemin[idx2];
+		chemin[idx1] = v2;
+		chemin[idx2] = v1;
+		return chemin;
+
 	}
 
 }

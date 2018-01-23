@@ -15,7 +15,7 @@ public class Main {
 			System.out.println("i=" + i +" : " +cheminAleatoire[i]);
 		//System.out.println(matrice.calculerCout(cheminAleatoire));
 		
-		Ville[][] voisinages = matrice.fonction_twoopt(cheminAleatoire);
+		Ville[][] voisinages = matrice.fonction_swap(cheminAleatoire);
 		printVoisinages(voisinages);
 		
 		// int[] tab = /* tsp.solutionpermutationaleatoire(); */new int[3];
