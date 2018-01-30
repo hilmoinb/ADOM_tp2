@@ -115,6 +115,8 @@ public class Matrice {
 			return null;
 		}
 		
+		System.out.println("Chemin initial : " + this.calculerCout(cheminInitial));
+		
 		//On pourrait faire du récursif pour tout ce qui suit. Ou on laisse ce magnifique do-while() <3
 		Ville[] cheminUpdated = cheminInitial.clone();
 		Ville[][] voisinages = null;
