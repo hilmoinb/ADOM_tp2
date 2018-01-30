@@ -16,9 +16,9 @@ public class Matrice {
 		this.villes = villes;
 		this.NBVILLES = villes.length;
 		this.matrice = new double[NBVILLES + 1][NBVILLES + 1];
-		for (int i = 1; i < NBVILLES; i++) {
-			for (int j = i; j < NBVILLES; j++) {
-				this.matrice[i][j] = villes[i].distance(villes[j]);
+		for (int i = 1; i < NBVILLES+1; i++) {
+			for (int j = i; j < NBVILLES+1; j++) {
+				this.matrice[i][j] = villes[i-1].distance(villes[j-1]);
 			}
 		}
 	}
@@ -36,8 +36,6 @@ public class Matrice {
 
 	public int calculerCout(Ville[] chemin) {
 		int res = 0;
-		Ville current, next;
-
 		// on pourrait ajouter des if qui check si la taille du chemin est bien = à
 		// NBVILLES, si ce sont les bonnes villes etc
 		for (int i = 0; i < NBVILLES; i++)
@@ -61,24 +59,26 @@ public class Matrice {
 		return res;
 	}
 
-	public int fonctionheuristique(Ville debut) {
-		String chemin = debut + "";
-		List<Ville> utilise = new ArrayList<Ville>();
+	public Ville[] fonction_heuristique(Ville debut) {
+		Ville[] chemin = new Ville[NBVILLES];
+		List<Ville> restantes = new ArrayList<Ville>();
+		for(Ville v : this.villes)
+			restantes.add(v);
 		int res = 0;
-		Ville current = debut;
-		utilise.add(debut);
 		int cpt = 0;
-		while (cpt < matrice.length - 2) {
-			Ville tmp = findMin(current, utilise);
-			chemin += " - " + tmp;
+		Ville current = debut;
+		chemin[cpt++] = current;
+		restantes.remove(debut);
+		
+		while (!restantes.isEmpty()) {
+			Ville tmp = findMin(current, restantes);
+			chemin[cpt++] = tmp;
 			res += distance(tmp, current);
-			cpt++;
 			current = tmp;
-			utilise.add(tmp);
+			restantes.remove(tmp);
 		}
-		System.out.println(chemin);
 		res += distance(debut, current);
-		return res;
+		return chemin;
 	}
 
 	public double distance(Ville v1, Ville v2) {
@@ -88,12 +88,12 @@ public class Matrice {
 			return matrice[v1.pos][v2.pos];
 	}
 
-	public Ville findMin(Ville ville, List<Ville> util) {
+	public Ville findMin(Ville ville, List<Ville> restantes) {
 		double min = Double.MAX_VALUE;
 		Ville sommetpetit = null;
 
 		double tmp;
-		for (Ville v : util) {
+		for (Ville v : restantes) {
 			tmp = distance(ville, v);
 			if (tmp < min && tmp != 0) {
 				min = tmp;
@@ -109,7 +109,7 @@ public class Matrice {
 		if(initialisation.toLowerCase().compareTo("aleatoire") == 0)
 			cheminInitial = this.creerCheminAleatoire();
 		if(initialisation.toLowerCase().compareTo("heuristique") == 0)
-			cheminInitial = this.fonctionheuristique(debut);
+			cheminInitial = this.fonction_heuristique(this.villes[new Random().nextInt(NBVILLES)]);
 		if(cheminInitial == null) {
 			System.err.println("Fonction fonction_hillClimbing(...) : paramètre initialisation incorrect (\"" + initialisation + "\")");
 			return null;

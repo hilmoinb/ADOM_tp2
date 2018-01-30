@@ -45,4 +45,21 @@ public class Ville {
 		return "Ville [pos=" + pos + ", x=" + x + ", y=" + y + "]";
 	}
 
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Ville other = (Ville) obj;
+		if (pos != other.pos)
+			return false;
+		return true;
+	}
+	
+	
+
 }
