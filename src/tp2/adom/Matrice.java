@@ -89,7 +89,7 @@ public class Matrice {
 	}
 
 	public Ville findMin(Ville ville, List<Ville> util) {
-		double min = 999999990;
+		double min = Double.MAX_VALUE;
 		Ville sommetpetit = null;
 
 		double tmp;
@@ -103,11 +103,48 @@ public class Matrice {
 		return sommetpetit;
 	}
 
+	
+	public Ville[] fonction_hillClimbing(String voisinage, String initialisation, String mouvement) {
+		Ville[] cheminInitial = null;
+		if(initialisation.toLowerCase().compareTo("aleatoire") == 0)
+			cheminInitial = this.creerCheminAleatoire();
+		if(initialisation.toLowerCase().compareTo("heuristique") == 0)
+			cheminInitial = this.fonctionheuristique(debut);
+		if(cheminInitial == null) {
+			System.err.println("Fonction fonction_hillClimbing(...) : paramètre initialisation incorrect (\"" + initialisation + "\")");
+			return null;
+		}
+		
+		//On pourrait faire du récursif pour tout ce qui suit. Ou on laisse ce magnifique do-while() <3
+		Ville[] cheminUpdated = cheminInitial.clone();
+		Ville[][] voisinages = null;
+		do {
+			if(voisinage.toLowerCase().compareTo("swap") == 0)
+				voisinages = this.fonction_swap(cheminInitial);
+			if(voisinage.toLowerCase().compareTo("twoopt") == 0)
+				voisinages = this.fonction_twoopt(cheminInitial);
+			if(voisinages == null) {
+				System.err.println("Fonction fonction_hillClimbing(...) : paramètre voisinage incorrect (\"" + voisinage + "\")");
+				return null;
+			}
+			
+			if(mouvement.toLowerCase().compareTo("meilleur") == 0)
+				cheminUpdated = this.mouvement_meilleurVoisinAmeliorant(voisinages);
+			else if(mouvement.toLowerCase().compareTo("premier") == 0)
+				cheminUpdated = this.mouvement_premierVoisinAmeliorant(voisinages, this.calculerCout(cheminUpdated));
+			else {
+				System.err.println("Fonction fonction_hillClimbing(...) : paramètre mouvement incorrect (\"" + mouvement + "\")");
+				return null;
+			}
+		} while( this.calculerCout(cheminUpdated) < this.calculerCout(cheminUpdated) );
+		
+		return cheminUpdated;
+	}
+	
+	
 	/**
-	 * Génère la liste des voisinages possibles, ne fait rien de plus
-	 * 
-	 * @param villes
-	 *            Chemin des villes à parcourir dans l'ordre
+	 * Génère la liste des voisinages possiblesà la manière two-opt, ne fait rien de plus
+	 * @param villes Chemin des villes à parcourir dans l'ordre
 	 * @return liste des voisinages possibles sous firme de tableau de tableaux
 	 */
 	public Ville[][] fonction_twoopt(Ville[] chemin) {
@@ -131,17 +168,6 @@ public class Matrice {
 		return voisinages;
 	}
 
-	/*
-	 * public Ville[] fonction_twoopt(Ville[] villes) { boolean modifie = true;
-	 * while (modifie) { modifie = false; for (int i = 1; i < matrice.length - 1;
-	 * i++) { // bonne méthode de mettre des -1 ? for (int j = 1; j < matrice.length
-	 * - 1; j++) { if (j == i || j == i - 1 || j == i + 1) continue; if (distance(i,
-	 * i + 1) + distance(j, j + 1) > distance(i, j) + distance(i + 1, j + 1)) {
-	 * Ville tmp = villes[i + 1]; villes[i + 1] = villes[j]; villes[j] = tmp;
-	 * modifie = true; } } } } return villes; // peut être faire une cope du chemin
-	 * en début de fonction, au cas où ça modifie // son chemin d'entrée et que ça
-	 * lui plaise pas }
-	 */
 
 	public Ville[][] fonction_swap(Ville[] chemin) {
 		int nbSolutions = ((NBVILLES -1) * (NBVILLES - 2)) / 2;
@@ -158,7 +184,37 @@ public class Matrice {
 		}
 		return voisinages;
 	}
-
+	
+	/**
+	 * Trouver parmi les voisinages fournis celui qui a le coup le coût le plus bas
+	 * @param voisinages - Liste des voisinages sous forme de tableau de tableaux
+	 * @return Le meilleur voisinage trouvé, celui avec le coup le plus bas donc.  S
+	 */
+	public Ville[] mouvement_meilleurVoisinAmeliorant(Ville[][] voisinages) {
+		Ville[] meilleurVoisinage = null;
+		double meilleurCout = Double.MAX_VALUE, cout;
+		for(Ville[] voisinage : voisinages)
+			if (meilleurCout > (cout = this.calculerCout(voisinage)) ) {
+				meilleurVoisinage = voisinage;
+				meilleurCout = cout;
+			}
+		return meilleurVoisinage;
+	}
+	
+	
+	/**
+	 * Trouver parmi les voisinages fournis le premier à présenter un coup plus bas
+	 * @param voisinages - Liste des voisinages sous forme de tableau de tableaux
+	 * @return Le meilleur voisinage trouvé, celui avec le coup le plus bas donc
+	 */
+	public Ville[] mouvement_premierVoisinAmeliorant(Ville[][] voisinages, double coutABattre) {
+		for(Ville[] voisinage : voisinages)
+			if ( coutABattre > this.calculerCout(voisinage) )
+				return voisinage;
+		return null;
+	}
+	
+	
 	private Ville[] swap(Ville[] chemin, int idx1, int idx2) {
 		Ville v1 = chemin[idx1];
 		Ville v2 = chemin[idx2];
