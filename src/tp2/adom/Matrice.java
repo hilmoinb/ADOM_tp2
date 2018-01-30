@@ -170,7 +170,7 @@ public class Matrice {
 
 
 	public Ville[][] fonction_swap(Ville[] chemin) {
-		int nbSolutions = ((NBVILLES -1) * (NBVILLES - 2)) / 2;
+		int nbSolutions = ((NBVILLES - 1) * (NBVILLES - 2)) / 2;
 		Ville[][] voisinages = new Ville[nbSolutions][NBVILLES];
 		int z = 0;
 		for (int i = 1; i < chemin.length; i++) {
@@ -215,6 +215,13 @@ public class Matrice {
 	}
 	
 	
+	/**
+	 * Fonction qui inverse les villes idx1 et idx2 dans le chemin
+	 * @param chemin
+	 * @param idx1
+	 * @param idx2
+	 * @return
+	 */
 	private Ville[] swap(Ville[] chemin, int idx1, int idx2) {
 		Ville v1 = chemin[idx1];
 		Ville v2 = chemin[idx2];
@@ -223,5 +230,15 @@ public class Matrice {
 		return chemin;
 
 	}
+	
+	public Ville[] fonction_swap_aleatoire(Ville[] chemin) {
+		Random r = new Random();
+		int nb1 = r.nextInt(NBVILLES);
+		int nb2 = r.nextInt(NBVILLES);
+		while (nb1 == nb2)
+			nb2= r.nextInt(NBVILLES);
+		return swap(chemin, nb1, nb2);
+	}
+	
 
 }
