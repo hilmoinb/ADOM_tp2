@@ -14,21 +14,69 @@ public class Main {
 		Ville[] villes = parser.genererVilles();
 		Matrice matrice = new Matrice(villes);
 		
+		/**
+		 * Génération de 100 chemins aléatoires, récupération du meilleur
+		 */
+		TspParser.changeSystemOutToFile("chemins_aleatoires.txt");
+		Ville[] cheminAleatoire = matrice.fonction_solutionAleatoireGlobale();
+		TspParser.changeSystemOutToConsole(SYSTEMOUT);
+		
+		/**
+		 * Calcul du meilleur chemin possible avec la fonction heuristique constructive
+		 */
 		TspParser.changeSystemOutToFile("heuristique_globale.txt");
 		Ville[] cheminHeuristique = matrice.fonction_heuristiqueGlobale();
 		TspParser.changeSystemOutToConsole(SYSTEMOUT);
 		
 		
-//		System.out.println(matrice);
 		
-//		Ville[] cheminAleatoire = matrice.creerCheminAleatoire();
-//		Ville[] cheminHeuristique = matrice.fonction_heuristique(new Ville(1,0,0));
+//		/**
+//		 * 100 fois SWAP, ALEATOIRE, PREMIER
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("SWAP", "ALEATOIRE", "PREMIER");
 		
-		/**
-		 * Comparaison de la fonction heuristique constructive en variant le ville de départ
-		 */
-//		for(int i=1; i<=100; i++)
-//			System.out.println(matrice.calculerCout(matrice.fonction_heuristique(new Ville(i,0,0))));
+//		/**
+//		 * 100 fois SWAP, ALEATOIRE, MEILLEUR
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("SWAP", "ALEATOIRE", "MEILLEUR");
+//		
+//		/**
+//		 * 100 fois TWO-OPT, ALEATOIRE, PREMIER
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("TWO-OPT", "ALEATOIRE", "PREMIER");
+//		
+//		/**
+//		 * 100 fois TWO-OPT, ALEATOIRE, MEILLEUR
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("TWO-OPT", "ALEATOIRE", "MEILLEUR");
+//		
+//		/**
+//		 * 100 fois SWAP, HEURISTIQUE, PREMIER
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("SWAP", "HEURISTIQUE", "PREMIER");
+//		
+//		/**
+//		 * 100 fois SWAP, HEURISTIQUE, MEILLEUR
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("SWAP", "HEURISTIQUE", "MEILLEUR");
+//		
+//		/**
+//		 * 100 fois TWO-OPT, HEURISTIQUE, PREMIER
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("TWO-OPT", "HEURISTIQUE", "PREMIER");
+//		
+//		/**
+//		 * 100 fois TWO-OPT, HEURISTIQUE, MEILLEUR
+//		 */
+//		for(int i=0; i<100; i++)
+//			matrice.fonction_hillClimbing("TWO-OPT", "HEURISTIQUE", "MEILLEUR");
 		
 		//Hillclimbing
 		//Ville[] cheminApresHillclimbing = matrice.fonction_hillClimbing(VOISINAGE, INITIALISATION, MOUVEMENT);
@@ -39,16 +87,5 @@ public class Main {
 	
 	
 	
-	public static void printVoisinages(Ville[][] voisinages) {
-		String str = "|\t";
-
-        for(int i=0;i<voisinages.length;i++){
-            for(int j=0;j<voisinages[i].length;j++){
-                str += voisinages[i][j] + "\t";
-            }
-            System.out.println(str + "|");
-            str = "|\t";
-        }
-
-	}
+	
 }

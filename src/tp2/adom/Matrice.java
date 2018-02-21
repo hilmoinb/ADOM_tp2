@@ -58,6 +58,27 @@ public class Matrice {
 		}
 		return res;
 	}
+	
+	public Ville[] fonction_solutionAleatoireGlobale() {
+		System.out.println("GENERATION DE SOLUTIONS ALEATOIRES :");
+		Ville[] bestChemin = this.creerCheminAleatoire();
+		int bestCost = this.calculerCout(bestChemin);
+		System.out.println("\nChemin : " + TspParser.cheminToString(bestChemin) + "\nCoût : " + bestCost);
+		
+		Ville[] chemin;
+		int cost;
+		for(int i=1; i<=100; i++) {
+			chemin = this.creerCheminAleatoire();
+			cost = this.calculerCout(chemin);
+			System.out.println("\nChemin : " + TspParser.cheminToString(chemin) + "\nCoût : " + this.calculerCout(chemin));
+			if(cost < bestCost) {
+				bestChemin = chemin;
+				bestCost = cost;
+			}
+		}
+		System.out.println("MEILLEURE SOLUTION TROUVÉE :\nChemin : " + TspParser.cheminToString(bestChemin) + "\nCoût : " + bestCost);
+		return bestChemin;
+	}
 
 	public Ville[] fonction_heuristiqueGlobale() {
 		System.out.println("HEURISTIQUE CONSTRUCTIVE VOISIN LE PLUS PROCHE :");
@@ -72,7 +93,6 @@ public class Matrice {
 			chemin = this.fonction_heuristique(this.villes[i]);
 			cost = this.calculerCout(chemin);
 			System.out.println("\nVille départ : " + this.villes[i] + "\nChemin : " + TspParser.cheminToString(chemin) + "\nCoût : " + cost);
-			System.out.println();
 			if(cost < bestCost) {
 				bestChemin = chemin;
 				bestCost = cost;
@@ -87,7 +107,6 @@ public class Matrice {
 		List<Ville> restantes = new ArrayList<Ville>();
 		for(Ville v : this.villes)
 			restantes.add(v);
-		int res = 0;
 		int cpt = 0;
 		Ville current = debut;
 		chemin[cpt++] = current;
@@ -96,11 +115,9 @@ public class Matrice {
 		while (!restantes.isEmpty()) {
 			Ville tmp = findMin(current, restantes);
 			chemin[cpt++] = tmp;
-			res += distance(tmp, current);
 			current = tmp;
 			restantes.remove(tmp);
 		}
-		res += distance(debut, current);
 		return chemin;
 	}
 
@@ -128,49 +145,68 @@ public class Matrice {
 
 	
 	public Ville[] fonction_hillClimbing(String voisinage, String initialisation, String mouvement) {
+		//System.out.println("RECHERCHE LOCALE HILL-CLIMBING :");
+		
+		///// INITIALISATION \\\\\
 		Ville[] cheminInitial = null;
-		if(initialisation.toLowerCase().compareTo("aleatoire") == 0)
+		if (initialisation.toLowerCase().compareTo("aleatoire") == 0)
 			cheminInitial = this.creerCheminAleatoire();
-		if(initialisation.toLowerCase().compareTo("heuristique") == 0)
+		if (initialisation.toLowerCase().compareTo("heuristique") == 0)
 			cheminInitial = this.fonction_heuristique(this.villes[new Random().nextInt(NBVILLES)]);
-		if(cheminInitial == null) {
-			System.err.println("Fonction fonction_hillClimbing(...) : paramètre initialisation incorrect (\"" + initialisation + "\")");
+		if (cheminInitial == null) {
+			System.err.println("Fonction fonction_hillClimbing(...) : paramètre initialisation incorrect (\""
+					+ initialisation + "\")");
 			return null;
 		}
-		
-		System.out.println("Chemin initial : " + this.calculerCout(cheminInitial));
-		
-		//On pourrait faire du récursif pour tout ce qui suit. Ou on laisse ce magnifique do-while() <3
+
+		//System.out.println("\nChemin initial : " + TspParser.cheminToString(cheminInitial) + "\nCoût : " + this.calculerCout(cheminInitial));
+
+		///// VOISINAGE & MOUVEMENT \\\\\
 		Ville[] cheminUpdated = cheminInitial.clone();
 		Ville[][] voisinages = null;
+		int cpt = 0;
 		do {
-			if(voisinage.toLowerCase().compareTo("swap") == 0)
+			if(cpt != 0)
+				//System.out.println("\nChemin intermédiaire("+cpt+") : " + TspParser.cheminToString(cheminInitial) + "\nCoût : " + this.calculerCout(cheminInitial));
+
+			cheminInitial = cheminUpdated.clone();
+			
+			///// VOISINAGE \\\\\
+			if (voisinage.toLowerCase().compareTo("swap") == 0)
 				voisinages = this.fonction_swap(cheminInitial);
-			if(voisinage.toLowerCase().compareTo("twoopt") == 0)
+			if (voisinage.toLowerCase().compareTo("two-opt") == 0)
 				voisinages = this.fonction_twoopt(cheminInitial);
-			if(voisinages == null) {
-				System.err.println("Fonction fonction_hillClimbing(...) : paramètre voisinage incorrect (\"" + voisinage + "\")");
+			if (voisinages == null) {
+				System.err.println(
+						"Fonction fonction_hillClimbing(...) : paramètre voisinage incorrect (\"" + voisinage + "\")");
+				return null;
+			}
+
+			///// MOUVEMENT \\\\\
+			if (mouvement.toLowerCase().compareTo("meilleur") == 0)
+				cheminUpdated = this.mouvement_meilleurVoisinAmeliorant(voisinages, cheminInitial);
+			else if (mouvement.toLowerCase().compareTo("premier") == 0)
+				cheminUpdated = this.mouvement_premierVoisinAmeliorant(voisinages, cheminInitial);
+			else {
+				System.err.println(
+						"Fonction fonction_hillClimbing(...) : paramètre mouvement incorrect (\"" + mouvement + "\")");
 				return null;
 			}
 			
-			if(mouvement.toLowerCase().compareTo("meilleur") == 0)
-				cheminUpdated = this.mouvement_meilleurVoisinAmeliorant(voisinages);
-			else if(mouvement.toLowerCase().compareTo("premier") == 0)
-				cheminUpdated = this.mouvement_premierVoisinAmeliorant(voisinages, this.calculerCout(cheminUpdated));
-			else {
-				System.err.println("Fonction fonction_hillClimbing(...) : paramètre mouvement incorrect (\"" + mouvement + "\")");
-				return null;
-			}
-		} while( this.calculerCout(cheminUpdated) < this.calculerCout(cheminUpdated) );
-		
+		} while (this.calculerCout(cheminInitial) < this.calculerCout(cheminUpdated) && cpt++ < 30);
+
+		//System.out.println("\nChemin final : " + TspParser.cheminToString(cheminUpdated) + "\nCoût : " + this.calculerCout(cheminUpdated));
+		System.out.println(this.calculerCout(cheminUpdated));
+
 		return cheminUpdated;
-	}
+}
 	
 	
 	/**
-	 * Génère la liste des voisinages possiblesà la manière two-opt, ne fait rien de plus
-	 * @param villes Chemin des villes à parcourir dans l'ordre
-	 * @return liste des voisinages possibles sous firme de tableau de tableaux
+	 * Génère tous les voisinages du chemin d'origine :
+	 *  chaque voisinage est généré en supprimant 2 arrêtes et en reconnectant les 2 sous-tours obtenus
+	 * @param villes Le chemin d'origine sur lequel on va baser nos voisinages
+	 * @return la liste des voisinages générés, un tableau de chemins
 	 */
 	public Ville[][] fonction_twoopt(Ville[] chemin) {
 		int nbSolutions = (NBVILLES * (NBVILLES - 3)) / 2 + 1;
@@ -193,7 +229,12 @@ public class Matrice {
 		return voisinages;
 	}
 
-
+	/**
+	 * Génère tous les voisinages du chemin d'origine :
+	 *  chaque voisinage est généré en échangeant la position de 2 villes
+	 * @param chemin Le chemin d'origine sur lequel on va baser nos voisinages
+	 * @return la liste des voisinages générés, un tableau de chemins
+	 */
 	public Ville[][] fonction_swap(Ville[] chemin) {
 		int nbSolutions = ((NBVILLES - 1) * (NBVILLES - 2)) / 2;
 		Ville[][] voisinages = new Ville[nbSolutions][NBVILLES];
@@ -215,9 +256,9 @@ public class Matrice {
 	 * @param voisinages - Liste des voisinages sous forme de tableau de tableaux
 	 * @return Le meilleur voisinage trouvé, celui avec le coup le plus bas donc.  S
 	 */
-	public Ville[] mouvement_meilleurVoisinAmeliorant(Ville[][] voisinages) {
-		Ville[] meilleurVoisinage = null;
-		double meilleurCout = Double.MAX_VALUE, cout;
+	public Ville[] mouvement_meilleurVoisinAmeliorant(Ville[][] voisinages, Ville[] cheminABattre) {
+		Ville[] meilleurVoisinage = cheminABattre.clone();
+		double meilleurCout = this.calculerCout(meilleurVoisinage), cout;
 		for(Ville[] voisinage : voisinages)
 			if (meilleurCout > (cout = this.calculerCout(voisinage)) ) {
 				meilleurVoisinage = voisinage;
@@ -232,11 +273,13 @@ public class Matrice {
 	 * @param voisinages - Liste des voisinages sous forme de tableau de tableaux
 	 * @return Le meilleur voisinage trouvé, celui avec le coup le plus bas donc
 	 */
-	public Ville[] mouvement_premierVoisinAmeliorant(Ville[][] voisinages, double coutABattre) {
+	public Ville[] mouvement_premierVoisinAmeliorant(Ville[][] voisinages, Ville[] cheminABattre) {
+		Ville[] meilleurVoisinage = cheminABattre.clone();
+		double meilleurCout = this.calculerCout(meilleurVoisinage);
 		for(Ville[] voisinage : voisinages)
-			if ( coutABattre > this.calculerCout(voisinage) )
+			if ( meilleurCout > this.calculerCout(voisinage) )
 				return voisinage;
-		return null;
+		return meilleurVoisinage;
 	}
 	
 	

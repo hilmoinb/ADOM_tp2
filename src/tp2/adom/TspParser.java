@@ -70,5 +70,17 @@ public class TspParser {
 	public static void changeSystemOutToConsole(PrintStream output) {
 		System.setOut(output);
 	}
+	
+	public static void printVoisinages(Ville[][] voisinages) {
+		String str = "|\t";
+
+        for(int i=0;i<voisinages.length;i++){
+            for(int j=0;j<voisinages[i].length;j++){
+                str += voisinages[i][j] + "\t";
+            }
+            System.out.println(str + "|");
+            str = "|\t";
+        }
+	}
 
 }
