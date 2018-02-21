@@ -59,6 +59,29 @@ public class Matrice {
 		return res;
 	}
 
+	public Ville[] fonction_heuristiqueGlobale() {
+		System.out.println("HEURISTIQUE CONSTRUCTIVE VOISIN LE PLUS PROCHE :");
+		
+		Ville[] bestChemin = this.fonction_heuristique(this.villes[0]);
+		int bestCost = this.calculerCout(bestChemin);
+		System.out.println("\nVille départ : " + this.villes[0] + "\nChemin : " + TspParser.cheminToString(bestChemin) + "\nCoût : " + bestCost);
+		
+		Ville[] chemin;
+		int cost;
+		for(int i=1; i<this.NBVILLES; i++) {
+			chemin = this.fonction_heuristique(this.villes[i]);
+			cost = this.calculerCout(chemin);
+			System.out.println("\nVille départ : " + this.villes[i] + "\nChemin : " + TspParser.cheminToString(chemin) + "\nCoût : " + cost);
+			System.out.println();
+			if(cost < bestCost) {
+				bestChemin = chemin;
+				bestCost = cost;
+			}
+		}
+		System.out.println("MEILLEURE SOLUTION TROUVÉE :\nVille départ : " + bestChemin[0] + "\nChemin : " + TspParser.cheminToString(bestChemin) + "\nCoût : " + bestCost);
+		return bestChemin;
+	}
+	
 	public Ville[] fonction_heuristique(Ville debut) {
 		Ville[] chemin = new Ville[NBVILLES];
 		List<Ville> restantes = new ArrayList<Ville>();
