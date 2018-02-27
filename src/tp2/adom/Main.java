@@ -1,6 +1,8 @@
 package tp2.adom;
 import java.io.File;
 import java.io.PrintStream;
+import java.time.Clock;
+import java.util.Timer;
 
 public class Main {
 	public static final PrintStream SYSTEMOUT = System.out;
@@ -14,21 +16,8 @@ public class Main {
 		Ville[] villes = parser.genererVilles();
 		Matrice matrice = new Matrice(villes);
 		
-		/**
-		 * Génération de 100 chemins aléatoires, récupération du meilleur
-		 */
-		TspParser.changeSystemOutToFile("chemins_aleatoires.txt");
-		Ville[] cheminAleatoire = matrice.fonction_solutionAleatoireGlobale();
-		TspParser.changeSystemOutToConsole(SYSTEMOUT);
 		
-		/**
-		 * Calcul du meilleur chemin possible avec la fonction heuristique constructive
-		 */
-		TspParser.changeSystemOutToFile("heuristique_globale.txt");
-		Ville[] cheminHeuristique = matrice.fonction_heuristiqueGlobale();
-		TspParser.changeSystemOutToConsole(SYSTEMOUT);
-		
-		
+		long startTime = System.currentTimeMillis();
 		
 //		/**
 //		 * 100 fois SWAP, ALEATOIRE, PREMIER
@@ -78,11 +67,9 @@ public class Main {
 //		for(int i=0; i<100; i++)
 //			matrice.fonction_hillClimbing("TWO-OPT", "HEURISTIQUE", "MEILLEUR");
 		
-		//Hillclimbing
-		//Ville[] cheminApresHillclimbing = matrice.fonction_hillClimbing(VOISINAGE, INITIALISATION, MOUVEMENT);
 		
-		//Coût après le hillclimbing
-		//System.out.println(matrice.calculerCout(cheminApresHillclimbing));
+		long exTime = System.currentTimeMillis() - startTime;
+		System.out.println(exTime);
 	}
 	
 	
