@@ -19,6 +19,8 @@ public class Main {
 		
 		long startTime = System.currentTimeMillis();
 		
+		matrice.fonction_hillClimbing(VOISINAGE, INITIALISATION, MOUVEMENT);
+		
 //		/**
 //		 * 100 fois SWAP, ALEATOIRE, PREMIER
 //		 */

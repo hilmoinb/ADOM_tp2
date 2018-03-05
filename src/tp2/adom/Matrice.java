@@ -199,7 +199,7 @@ public class Matrice {
 		System.out.println(this.calculerCout(cheminUpdated));
 
 		return cheminUpdated;
-}
+	}
 	
 	
 	/**
