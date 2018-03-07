@@ -1,8 +1,6 @@
 package tp2.adom;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -12,6 +10,7 @@ public class Matrice {
 	private final int NBVILLES;
 	private Ville[] villes;
 
+	
 	public Matrice(Ville[] villes) {
 		this.villes = villes;
 		this.NBVILLES = villes.length;
@@ -23,6 +22,7 @@ public class Matrice {
 		}
 	}
 
+	
 	@Override
 	public String toString() {
 		String toReturn = "";
@@ -34,6 +34,12 @@ public class Matrice {
 		return toReturn;
 	}
 
+	
+	/**
+	 * Calcule le coût de parcours d'un chemin
+	 * @param chemin - Le chemin dont on veut calculer le coût
+	 * @return  Le coût du chemin
+	 */
 	public int calculerCout(Ville[] chemin) {
 		int res = 0;
 		// on pourrait ajouter des if qui check si la taille du chemin est bien = à
@@ -44,6 +50,11 @@ public class Matrice {
 		return res;
 	}
 
+	
+	/**
+	 * Fonction générant une solution complètement aléatoire pour le problème du TSP
+	 * @return Un chemin solution
+	 */
 	public Ville[] creerCheminAleatoire() {
 		ArrayList<Ville> list = new ArrayList<>();
 		for (Ville v : this.villes)
@@ -59,6 +70,11 @@ public class Matrice {
 		return res;
 	}
 	
+	
+	/**
+	 * Fonction générant 100 solutions complètement aléatoires pour le problème du TSP et retourne la moins coûteuse
+	 * @return  Un chemin solution
+	 */
 	public Ville[] fonction_solutionAleatoireGlobale() {
 		System.out.println("GENERATION DE SOLUTIONS ALEATOIRES :");
 		Ville[] bestChemin = this.creerCheminAleatoire();
@@ -80,6 +96,11 @@ public class Matrice {
 		return bestChemin;
 	}
 
+	
+	/**
+	 * Fonction générant la meilleure solution à l'aide de la méthode heuristique constructive pour le problème du TSP. On applique la fonction_heuristique avec toutes les villes de départ possibles et on garde la meilleure solution
+	 * @return  Le chemin le moins coûteux en méthode heuristique constructive
+	 */
 	public Ville[] fonction_heuristiqueGlobale() {
 		System.out.println("HEURISTIQUE CONSTRUCTIVE VOISIN LE PLUS PROCHE :");
 		
@@ -102,6 +123,12 @@ public class Matrice {
 		return bestChemin;
 	}
 	
+	
+	 /**
+	  * Fonction générant une solution normalement peu coûteuse pour le problème du TSP. Elle applique la méthode du plus proche voisin comme ville suivante à parcourir
+	  * @param debut - La ville à partir de laquelle notre solution démarre (et donc à partir de où commence la recherche du plus proche voisin))
+	  * @return  Un chemin peu coûteux avec pour ville de départ ({@param debut}
+	  */
 	public Ville[] fonction_heuristique(Ville debut) {
 		Ville[] chemin = new Ville[NBVILLES];
 		List<Ville> restantes = new ArrayList<Ville>();
@@ -121,6 +148,13 @@ public class Matrice {
 		return chemin;
 	}
 
+	
+	/**
+	 * Calcule la distance entre 2 villes
+	 * @param v1 - La première ville
+	 * @param v2 - La deuxième ville
+	 * @return  La distance entre les 2 villes
+	 */
 	public double distance(Ville v1, Ville v2) {
 		if (v1.pos > v2.pos)
 			return matrice[v2.pos][v1.pos];
@@ -128,6 +162,13 @@ public class Matrice {
 			return matrice[v1.pos][v2.pos];
 	}
 
+	
+	/**
+	 * Trouve la ville la plus proche  d'une ville donnée en entrée
+	 * @param ville - La ville de départ
+	 * @param restantes - La liste de villes candidates
+	 * @return  La ville la plus proche
+	 */
 	public Ville findMin(Ville ville, List<Ville> restantes) {
 		double min = Double.MAX_VALUE;
 		Ville sommetpetit = null;
@@ -144,6 +185,13 @@ public class Matrice {
 	}
 
 	
+	/**
+	 * Fonction appliquant un algorithme de recherche locale, elle trouve une solution de qualité en effectuant des mouvements dans les voisinages des solutions courantes
+	 * @param voisinage - Choix d'une génération des voisinages avec la méthode swap ou two-opt
+	 * @param initialisation - Choix d'une solution initialie générée aléatoirement ou à l'aide d'une heuristique constructive
+	 * @param mouvement - Choix de la stratégie de déplacement premier voisin améliorant ou meilleur voisin améliorant
+	 * @return  Un chemin au coût normalement peu élevé (varie en fonction des paramètres d'entrée)
+	 */
 	public Ville[] fonction_hillClimbing(String voisinage, String initialisation, String mouvement) {
 		//System.out.println("RECHERCHE LOCALE HILL-CLIMBING :");
 		
@@ -229,6 +277,7 @@ public class Matrice {
 		return voisinages;
 	}
 
+	
 	/**
 	 * Génère tous les voisinages du chemin d'origine :
 	 *  chaque voisinage est généré en échangeant la position de 2 villes
@@ -250,6 +299,7 @@ public class Matrice {
 		}
 		return voisinages;
 	}
+	
 	
 	/**
 	 * Trouver parmi les voisinages fournis celui qui a le coup le coût le plus bas
@@ -296,9 +346,14 @@ public class Matrice {
 		chemin[idx1] = v2;
 		chemin[idx2] = v1;
 		return chemin;
-
 	}
 	
+	
+	/**
+	 * Fonction qui inverse 2 villes sélectionnées aléatoirement dans le chemin
+	 * @param chemin - Le chemin sur lequel on applique le swap
+	 * @return  Le chemin sur lequel on a appliqué le swap
+	 */
 	public Ville[] fonction_swap_aleatoire(Ville[] chemin) {
 		Random r = new Random();
 		int nb1 = r.nextInt(NBVILLES);
